@@ -51,7 +51,15 @@ for contact in contacts_list_formatted:
         contacts_list_unique[contact[0]] = contact
     else:
         for i, field in enumerate(contact):
-            contacts_list_unique[contact[0]][i] = max(contacts_list_unique[contact[0]][i], field)
+            try:
+                contacts_list_unique[contact[0]][i] = max(contacts_list_unique[contact[0]][i], field)
+            except IndexError as err:
+                print(f'При обработке строки {i} возникла ошибка "{err}". Возможно, в дублирующихся записях оказалось разное число полей. '
+                    f'Строка обработана, но рекомендуется проверить её корректность.')
+                # Если в дублирующейся записи полей больше, чем в первичной - добавить в первичную запись новое поле 
+                # (чтобы не потерять дополнительные данные, оказавшиеся в дублирующей записи)
+                if i >= len(contacts_list_unique[contact[0]]):
+                    contacts_list_unique[contact[0]].append(field)
 
 # pprint(contacts_list_unique)
 
